@@ -1,7 +1,7 @@
 FROM python:3.11-slim-buster
 
-WORKDIR /ui-selenium-tests/
-COPY ./ /ui-selenium-tests/
+WORKDIR /playwright-tests/
+COPY ./ /playwright-tests/
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
