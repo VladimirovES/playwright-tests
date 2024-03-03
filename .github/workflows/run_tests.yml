@@ -85,10 +85,10 @@ jobs:
           echo "Current working directory is $(pwd)"
           ls -lha
 
-      - name: "Check test files"
+      - name: "List contents of /playwright-tests/"
         run: |
-          echo "Checking presence of test files in the directory..."
-          ls -lha /playwright-tests/
+          docker run --rm ${{ env.MY_IMAGE }} ls -lha /playwright-tests/
+      
 
       - name: "Run tests"
         run: |
