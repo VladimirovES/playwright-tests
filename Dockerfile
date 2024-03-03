@@ -11,3 +11,5 @@ RUN python -m pip install pip==22.1.2 && pip install wheel && pip install --upgr
     && pip install coincurve  \
     && pip install --upgrade setuptools \
     && pip install -r requirements.txt
+
+RUN playwright install
