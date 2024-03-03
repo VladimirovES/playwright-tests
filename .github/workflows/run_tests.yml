@@ -60,7 +60,7 @@ jobs:
       - name: 'Set name image'
         shell: bash
         run: |
-          echo "MY_IMAGE=mytestimage" >> $GITHUB_ENV
+          echo "MY_IMAGE=playwrightimage" >> $GITHUB_ENV
 
 
       - name: Build Docker image
