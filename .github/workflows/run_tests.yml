@@ -88,14 +88,19 @@ jobs:
       - name: "List contents of /playwright-tests/"
         run: |
           docker run --rm ${{ env.MY_IMAGE }} ls -lha /playwright-tests/
-      
+
+      - name: "List contents of /playwright-tests/tests/"
+        run: |
+          docker run --rm ${{ env.MY_IMAGE }} ls -lha /playwright-tests/tests/
+
 
       - name: "Run tests"
         run: |
           if [[ -n "$(docker ps -a | grep ${{ env.TEST_CONTAINER }})" ]]; then docker rm -f ${{ env.TEST_CONTAINER }}; fi
           docker run  \
             --name ${{ env.TEST_CONTAINER }}\
-            ${{ env.MY_IMAGE }} pytest -k 'test_nickname_user' --base_url=${{ env.BASE_URL }} --alluredir ${{ env.ALLURE_FOLDER }}
+            ${{ env.MY_IMAGE }} pytest tests/ -k 'test_nickname_user' --base_url=${{ env.BASE_URL }} --alluredir /playwright-tests/${{ env.ALLURE_FOLDER }}
+
 
       - name: "Copy allure results from container"
         if: ${{ always() }}
