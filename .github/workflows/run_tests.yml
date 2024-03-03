@@ -72,17 +72,22 @@ jobs:
         run: |
           echo "ALLURE_FOLDER=results-${{ env.GIT_BRANCH_TESTS }}" >> $GITHUB_ENV
 
+      - name: : "Set test container env"
+        shell: bash
+        run: |
+          echo "TEST_CONTAINER=${{ env.GIT_BRANCH_TESTS }}-test" >> $GITHUB_ENV
+
       - name: "Run tests"
         run: |
-          if [[ -n "$(docker ps -a | grep ${{ env.GIT_BRANCH_TESTS }}-test)" ]]; then docker rm -f ${{ env.GIT_BRANCH_TESTS }}-test; fi
+          if [[ -n "$(docker ps -a | grep ${{ env.TEST_CONTAINER }})" ]]; then docker rm -f ${{ env.TEST_CONTAINER }}; fi
           docker run  \
-            --name ${{ env.GIT_BRANCH_TESTS }}-test \
+            --name ${{ env.TEST_CONTAINER }}\
             ${{ env.MY_IMAGE }} pytest -m ${{ env.MARKING }} --base_url=${{ env.BASE_URL }} --alluredir ${{ env.ALLURE_FOLDER }}
 
       - name: "Copy allure results from container"
         if: ${{ always() }}
         run: |
-          docker cp ${{ env.GIT_BRANCH_TESTS }}-test:/ui-selenium-tests/${{ env.ALLURE_FOLDER }} ./allure-results
+          docker cp ${{ env.TEST_CONTAINER }}:/playwright-tests/${{ env.ALLURE_FOLDER }} ./allure-results
 
 
       - name: "Upload Allure results as an artifact"
@@ -133,6 +138,6 @@ jobs:
       - name: Add link to job summary
         run: |
           echo '### Отчет Allure' >> $GITHUB_STEP_SUMMARY
-          echo '[Открыть отчет Allure](https://vladimiroves.github.io/ui-selenium-tests/)' >> $GITHUB_STEP_SUMMARY
+          echo '[Открыть отчет Allure](https://vladimiroves.github.io/playwright-tests/)' >> $GITHUB_STEP_SUMMARY
 
 

@@ -28,7 +28,7 @@ def pytest_addoption(parser):
 @pytest.fixture(scope='session')
 def chromium_page(api_clients) -> Page:
     with sync_playwright() as playwright:
-        chromium = playwright.chromium.launch(headless=False)
+        chromium = playwright.chromium.launch()
         yield chromium.new_page()
         chromium.close()
 
