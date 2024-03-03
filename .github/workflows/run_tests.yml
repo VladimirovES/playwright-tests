@@ -77,6 +77,19 @@ jobs:
         run: |
           echo "TEST_CONTAINER=${{ env.GIT_BRANCH_TESTS }}-test" >> $GITHUB_ENV
 
+      - name: "Print environment variables"
+        run: |
+          echo "MARKING=${MARKING}"
+          echo "BASE_URL=${BASE_URL}"
+          echo "GIT_BRANCH_TESTS=${GIT_BRANCH_TESTS}"
+          echo "Current working directory is $(pwd)"
+          ls -lha
+
+      - name: "Check test files"
+        run: |
+          echo "Checking presence of test files in the directory..."
+          ls -lha /playwright-tests/
+
       - name: "Run tests"
         run: |
           if [[ -n "$(docker ps -a | grep ${{ env.TEST_CONTAINER }})" ]]; then docker rm -f ${{ env.TEST_CONTAINER }}; fi
