@@ -72,7 +72,7 @@ jobs:
         run: |
           echo "ALLURE_FOLDER=results-${{ env.GIT_BRANCH_TESTS }}" >> $GITHUB_ENV
 
-      - name: : "Set test container env"
+      - name: "Set test container env"
         shell: bash
         run: |
           echo "TEST_CONTAINER=${{ env.GIT_BRANCH_TESTS }}-test" >> $GITHUB_ENV
