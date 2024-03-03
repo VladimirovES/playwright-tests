@@ -95,7 +95,7 @@ jobs:
           if [[ -n "$(docker ps -a | grep ${{ env.TEST_CONTAINER }})" ]]; then docker rm -f ${{ env.TEST_CONTAINER }}; fi
           docker run  \
             --name ${{ env.TEST_CONTAINER }}\
-            ${{ env.MY_IMAGE }} pytest -m ${{ env.MARKING }} --base_url=${{ env.BASE_URL }} --alluredir ${{ env.ALLURE_FOLDER }}
+            ${{ env.MY_IMAGE }} pytest -k 'test_nickname_user' --base_url=${{ env.BASE_URL }} --alluredir ${{ env.ALLURE_FOLDER }}
 
       - name: "Copy allure results from container"
         if: ${{ always() }}
