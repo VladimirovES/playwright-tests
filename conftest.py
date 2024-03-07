@@ -1,7 +1,11 @@
-import pytest
+import allure
 from playwright.sync_api import sync_playwright, Page
 
+from files import Files
+from fixtures.account_fixtures import *
+
 from data_test.user_data import UserData
+from pages.login_page import LoginPage
 from pages.profile_page import ProfilePage
 from singleton import BaseUrlSingleton
 
@@ -28,7 +32,7 @@ def pytest_addoption(parser):
 @pytest.fixture(scope='session')
 def chromium_page(api_clients) -> Page:
     with sync_playwright() as playwright:
-        chromium = playwright.chromium.launch()
+        chromium = playwright.chromium.launch(headless=False)
         yield chromium.new_page()
         chromium.close()
 
@@ -38,10 +42,16 @@ def profile_page(chromium_page):
     return ProfilePage(chromium_page)
 
 
+@pytest.fixture(scope="function")
+def login_page(chromium_page):
+    return LoginPage(chromium_page)
+
+
 @pytest.fixture(scope="session", autouse=True)
 def setup_base_url(request):
     base_url = request.config.getoption("--base_url")
     BaseUrlSingleton.set_base_url(base_url)
+
 
 @pytest.fixture(scope='session')
 def api_clients():
@@ -58,9 +68,17 @@ def api_clients():
 
     for user in [UserData.user1, UserData.user2]:
         user_clients[user.userId].account.delete_user(user)
-# @pytest.fixture(scope="function")
-# def browser(request, base_url):
-#     with sync_playwright() as p:
-#         browser = p.chromium.launch(headless=False)
-#         yield browser
-#         browser.close()
+
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item):
+    outcome = yield
+    report = outcome.get_result()
+
+    if report.when == "call" and report.failed:
+        page = item.funcargs.get("chromium_page")
+        if page:
+            screenshot = page.screenshot(full_page=True)
+            allure.attach(screenshot, name="screenshot", attachment_type=allure.attachment_type.PNG)
+
+

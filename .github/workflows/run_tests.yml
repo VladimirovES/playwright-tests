@@ -8,9 +8,9 @@ on:
         required: True
         type: choice
         options:
-          - regress
           - profile
           - login
+          - regress
       base_url:
         description: "URL"
         required: true
@@ -77,29 +77,12 @@ jobs:
         run: |
           echo "TEST_CONTAINER=${{ env.GIT_BRANCH_TESTS }}-test" >> $GITHUB_ENV
 
-      - name: "Print environment variables"
-        run: |
-          echo "MARKING=${MARKING}"
-          echo "BASE_URL=${BASE_URL}"
-          echo "GIT_BRANCH_TESTS=${GIT_BRANCH_TESTS}"
-          echo "Current working directory is $(pwd)"
-          ls -lha
-
-      - name: "List contents of /playwright-tests/"
-        run: |
-          docker run --rm ${{ env.MY_IMAGE }} ls -lha /playwright-tests/
-
-      - name: "List contents of /playwright-tests/tests/"
-        run: |
-          docker run --rm ${{ env.MY_IMAGE }} ls -lha /playwright-tests/tests/
-
-
       - name: "Run tests"
         run: |
           if [[ -n "$(docker ps -a | grep ${{ env.TEST_CONTAINER }})" ]]; then docker rm -f ${{ env.TEST_CONTAINER }}; fi
           docker run  \
             --name ${{ env.TEST_CONTAINER }}\
-            ${{ env.MY_IMAGE }} pytest tests/ -k 'test_nickname_user' --base_url=${{ env.BASE_URL }} --alluredir /playwright-tests/${{ env.ALLURE_FOLDER }}
+            ${{ env.MY_IMAGE }} pytest tests/ -m ${{ env.MARKING }} --base_url=${{ env.BASE_URL }} --alluredir /playwright-tests/${{ env.ALLURE_FOLDER }}
 
 
       - name: "Copy allure results from container"
