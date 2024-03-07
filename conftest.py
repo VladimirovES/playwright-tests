@@ -1,7 +1,6 @@
 import allure
 from playwright.sync_api import sync_playwright, Page
 
-from files import Files
 from fixtures.account_fixtures import *
 
 from data_test.user_data import UserData
