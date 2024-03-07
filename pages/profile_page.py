@@ -17,7 +17,7 @@ class ProfilePage(BasePage):
         super().open_page(route)
 
         self.log_out = Button(self._page,
-                              locator="//button[@id='submit']",
+                              locator="//button[@id='submit' and text()='Log out']",
                               name='Log out')
 
         self.username = Text(self._page,

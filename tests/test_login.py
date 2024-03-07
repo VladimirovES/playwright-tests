@@ -1,6 +1,7 @@
 import allure
 
 from data_test.user_data import UserData
+from singleton import BaseUrlSingleton
 from utils.routing import Routing
 import pytest
 
@@ -31,7 +32,7 @@ class TestLogin:
     @allure.title('With valid creeds"')
     def test_valid_login(self, login_page, create_user_for_login):
         # Arrange
-        expected_url = 'hehe' + f'{Routing.profile}'
+        expected_url = BaseUrlSingleton.get_base_url() + f'{Routing.profile}'
         user = create_user_for_login
 
         # Act

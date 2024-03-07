@@ -31,7 +31,7 @@ def pytest_addoption(parser):
 @pytest.fixture(scope='session')
 def chromium_page(api_clients) -> Page:
     with sync_playwright() as playwright:
-        chromium = playwright.chromium.launch(headless=True)
+        chromium = playwright.chromium.launch(headless=False)
         yield chromium.new_page()
         chromium.close()
 
@@ -77,7 +77,10 @@ def pytest_runtest_makereport(item):
     if report.when == "call" and report.failed:
         page = item.funcargs.get("chromium_page")
         if page:
-            screenshot = page.screenshot(full_page=True)
-            allure.attach(screenshot, name="screenshot", attachment_type=allure.attachment_type.PNG)
+            try:
+                screenshot = page.screenshot(full_page=True)
+                allure.attach(screenshot, name="screenshot", attachment_type=allure.attachment_type.PNG)
+            except Exception as e:
+                print(f"Не удалось сделать скриншот: {e}")
 
 
