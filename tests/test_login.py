@@ -1,4 +1,5 @@
 import allure
+from qaseio.pytest import qase
 
 from data_test.user_data import UserData
 from singleton import BaseUrlSingleton
@@ -14,7 +15,7 @@ class TestLogin:
 
     # @allure.story('Invalid Login')
     # @allure.title('With username "{login}" and password "{password}"')
-    @pytest.mark.qase(id=1)
+    @qase.id(1)
     @pytest.mark.parametrize('login, password', [(UserData.user_changes.userName, 'invalid'),
                                                  ('invalid_login', UserData.user_changes.password),
                                                  (UserData.user_changes.userName, ""),
@@ -29,8 +30,9 @@ class TestLogin:
         # Assert
         login_page.validation_error.assert_text_eql('Invalid username or password!')
 
-    @allure.story('Login')
-    @allure.title('With valid creeds"')
+    # @allure.story('Login')
+    # @allure.title('With valid creeds"')
+    @qase.id(2)
     def test_valid_login(self, login_page, create_user_for_login):
         # Arrange
         expected_url = BaseUrlSingleton.get_base_url() + f'{Routing.profile}'

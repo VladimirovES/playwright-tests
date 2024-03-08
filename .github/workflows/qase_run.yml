@@ -94,7 +94,9 @@ jobs:
           if [[ -n "$(docker ps -a | grep ${{ env.TEST_CONTAINER }})" ]]; then docker rm -f ${{ env.TEST_CONTAINER }}; fi
           docker run  \
             --name ${{ env.TEST_CONTAINER }}\
-            ${{ env.MY_IMAGE }} pytest tests/ --base_url=https://demoqa.com/ --alluredir /playwright-tests/${{ env.ALLURE_FOLDER }}
+            ${{ env.MY_IMAGE }} pytest tests/ --qase-mode=testops \
+               --qase-testops-api-token=${{ secrets.QASE_API_KEY }} \
+               --qase-testops-project=YOUR_PROJECT_CODE --base_url=https://demoqa.com/ --alluredir /playwright-tests/${{ env.ALLURE_FOLDER }}
 
 
       - name: "Copy allure results from container"
