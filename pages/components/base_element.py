@@ -4,6 +4,7 @@ from playwright.async_api import Page
 from abc import abstractmethod, ABC
 
 from playwright.sync_api import expect, Locator
+from qaseio.pytest import qase
 
 
 class PageElement(ABC):
@@ -31,22 +32,22 @@ class PageElement(ABC):
         return self._find_element(**kwargs).text_content()
 
     def click(self, **kwargs):
-        with allure.step(f'Нажать {self._type_of}: "{self._format_name(**kwargs)}".'):
+        with qase.step(f'Нажать {self._type_of}: "{self._format_name(**kwargs)}".'):
             self._find_element(**kwargs).click()
 
     def hover(self, **kwargs):
-        with allure.step(f'Навести курсор на {self._type_of}: "{self._format_name(**kwargs)}".'):
+        with qase.step(f'Навести курсор на {self._type_of}: "{self._format_name(**kwargs)}".'):
             self._find_element(**kwargs).hover()
 
     def assert_visibility(self, is_visible=True, **kwargs):
         text_report = 'Отображается' if is_visible else 'Не отображается'
-        with allure.step(f'Assert: "{self._type_of}" - "{self._format_name(**kwargs)}" {text_report} на странице.'):
+        with qase.step(f'Assert: "{self._type_of}" - "{self._format_name(**kwargs)}" {text_report} на странице.'):
             if is_visible:
                 expect(self._find_element(**kwargs)).to_be_visible()
             else:
                 expect(self._find_element(**kwargs)).not_to_be_visible()
 
     def assert_text_eql(self, text, **kwargs):
-        with allure.step(f'Assert: "{self._type_of}" - "{self._format_name(**kwargs)}" {text} на странице.'):
+        with qase.step(f'Assert: "{self._type_of}" - "{self._format_name(**kwargs)}" {text} на странице.'):
             expect(self._find_element(**kwargs)).to_have_text(text)
 # Можно сделать отдельно работу с таблицами? модальными окнами
