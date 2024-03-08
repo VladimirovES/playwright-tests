@@ -14,6 +14,8 @@ from utils.api.account_api import AccountApi
 from utils.api.api_facade import ApiFacade
 
 
+
+
 @pytest.fixture(scope="session")
 def base_url(request):
     return request.config.getoption("--base_url")
