@@ -26,6 +26,7 @@ env:
   QASE_RUN_COMPLETE: ${{ inputs.qase_run_complete }}
   QASE_API_TOKEN: ${{ secrets.QASE_API_KEY }}
 
+
 permissions:
   contents: read
   pages: write
@@ -49,19 +50,6 @@ jobs:
         run: |
           echo "GIT_BRANCH_TESTS=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
-      - name: Set values for trigger env
-        if: github.event_name == 'repository_dispatch'
-        run: |
-          echo "MARKING='regress'" >> $GITHUB_ENV
-          echo "BASE_URL='https://demoqa.com/'">> $GITHUB_ENV
-
-
-      - name: Set  values for other workflow dispatch
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          echo "MARKING=${{ github.event.inputs.marking }}" >> $GITHUB_ENV
-          echo "BASE_URL=${{ github.event.inputs.base_url }}">> $GITHUB_ENV
-
 
       - name: Checkout test code
         uses: actions/checkout@v2
@@ -79,11 +67,6 @@ jobs:
         run: docker build test-rep/ -t ${{ env.MY_IMAGE}} -f test-rep/Dockerfile
 
 
-      - name: "Set allure envs"
-        shell: bash
-        run: |
-          echo "ALLURE_FOLDER=results-${{ env.GIT_BRANCH_TESTS }}" >> $GITHUB_ENV
-
       - name: "Set test container env"
         shell: bash
         run: |
@@ -96,63 +79,6 @@ jobs:
             --name ${{ env.TEST_CONTAINER }}\
             ${{ env.MY_IMAGE }} pytest tests/ --qase-mode=testops \
                --qase-testops-api-token=${{ secrets.QASE_API_KEY }} \
-               --qase-testops-project=${{ env.QASE_PROJECT_CODE }} --base_url=https://demoqa.com/ --alluredir /playwright-tests/${{ env.ALLURE_FOLDER }}
-
-
-      - name: "Copy allure results from container"
-        if: ${{ always() }}
-        run: |
-          docker cp ${{ env.TEST_CONTAINER }}:/playwright-tests/${{ env.ALLURE_FOLDER }} ./allure-results
-
-
-      - name: "Upload Allure results as an artifact"
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: allure-results
-          path: ./allure-results
-
-  generate-report:
-    runs-on: ubuntu-latest
-    needs: tests
-    if: always()
-    name: Generate report
-    steps:
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'microsoft'
-          java-version: '17'
-      - run: sudo wget https://github.com/allure-framework/allure2/releases/download/2.23.1/allure-2.23.1.tgz && sudo tar -zxvf allure-2.23.1.tgz -C /opt/ && sudo ln -s /opt/allure-2.23.1/bin/allure /usr/bin/allure
-      - name: Download all workflow run artifacts
-        uses: actions/download-artifact@v3
-      - run: allure generate -c allure-results -o _site
-      - name: Store generated report
-        uses: actions/upload-artifact@v3
-        with:
-          name: _site
-          path:
-            _site
-          retention-days: 1
-
-  publish-report:
-    runs-on: ubuntu-latest
-    needs: generate-report
-    if: always()
-    name: Deploy reports on GitHub Pages
-    steps:
-      - name: Download all workflow run artifacts
-        uses: actions/download-artifact@v3
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v2
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1.2.9
-
-      - name: Add link to job summary
-        run: |
-          echo '### Отчет Allure' >> $GITHUB_STEP_SUMMARY
-          echo '[Открыть отчет Allure](https://vladimiroves.github.io/playwright-tests/)' >> $GITHUB_STEP_SUMMARY
+               --qase-testops-project=${{ env.QASE_PROJECT_CODE }} --base_url=https://demoqa.com/ 
 
 
