@@ -8,12 +8,13 @@ import pytest
 
 @pytest.mark.regress
 @pytest.mark.login
-@allure.epic('User')
-@allure.feature('LoginPage')
+# @allure.epic('User')
+# @allure.feature('LoginPage')
 class TestLogin:
 
-    @allure.story('Invalid Login')
-    @allure.title('With username "{login}" and password "{password}"')
+    # @allure.story('Invalid Login')
+    # @allure.title('With username "{login}" and password "{password}"')
+    @pytest.mark.qase(id=1)
     @pytest.mark.parametrize('login, password', [(UserData.user_changes.userName, 'invalid'),
                                                  ('invalid_login', UserData.user_changes.password),
                                                  (UserData.user_changes.userName, ""),
