@@ -14,6 +14,7 @@ from utils.routing import Routing
 class TestProfile:
     @qase.title('Отображение NickName пользователя"')
     @allure.title('Отображение NickName пользователя')
+    @qase.id(3)
     def test_nickname_user(self, profile_page):
         # Act
         profile_page.auth(user=UserData.user1).open_page()
@@ -23,6 +24,7 @@ class TestProfile:
 
     @allure.title('Logout')
     @qase.title('Выход из системы.')
+    @qase.id(4)
     def test_logout_user(self, profile_page):
         # Arrange
         expected_url = BaseUrlSingleton.get_base_url() + f'{Routing.login}'
@@ -36,6 +38,7 @@ class TestProfile:
 
     @allure.title(f'Отображение книги {BooksData.book1.title} в списке')
     @qase.title(f'Отображение книги {BooksData.book1.title} в списке')
+    @qase.id(5)
     def test_mock_book(self, profile_page):
         # Arrange
         book = BooksData.book1
