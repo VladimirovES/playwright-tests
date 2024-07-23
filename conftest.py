@@ -6,7 +6,7 @@ from fixtures.account_fixtures import *
 from data_test.user_data import UserData
 from pages.login_page import LoginPage
 from pages.profile_page import ProfilePage
-from singleton import BaseUrlSingleton
+from singleton import BaseUrlSingleton, PlaywrightSingleton
 
 import os
 
@@ -84,18 +84,18 @@ def api_clients():
         user_clients[user.userId].account.delete_user(user)
 
 
-@pytest.hookimpl(tryfirst=True, hookwrapper=True)
-def pytest_runtest_makereport(item):
-    outcome = yield
-    report = outcome.get_result()
-
-    if report.when == "call" and report.failed:
-        page = item.funcargs.get("chromium_page")
-        if page:
-            try:
-                screenshot = page.screenshot(full_page=True)
-                allure.attach(screenshot, name="screenshot", attachment_type=allure.attachment_type.PNG)
-            except Exception as e:
-                print(f"Не удалось сделать скриншот: {e}")
-
-
+# @pytest.hookimpl(tryfirst=True, hookwrapper=True)
+# def pytest_runtest_makereport(item):
+#     outcome = yield
+#     report = outcome.get_result()
+#
+#     if report.when == "call" and report.failed:
+#         page = item.funcargs.get("chromium_page")
+#         if page:
+#             try:
+#                 screenshot = page.screenshot(full_page=True)
+#                 allure.attach(screenshot, name="screenshot", attachment_type=allure.attachment_type.PNG)
+#             except Exception as e:
+#                 print(f"Не удалось сделать скриншот: {e}")
+#
+#

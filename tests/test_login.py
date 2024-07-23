@@ -11,7 +11,7 @@ import pytest
 @pytest.mark.login
 @allure.epic('User')
 @allure.feature('LoginPage')
-@qase.suite(title='LoginPage')
+# @qase.suite(title='LoginPage')
 class TestLogin:
 
     @allure.story('Invalid Login')
@@ -34,7 +34,7 @@ class TestLogin:
 
     @allure.story('Login')
     @allure.title('With valid creeds"')
-    @qase.title('With valid creeds"')
+    # @qase.title('With valid creeds"')
     def test_valid_login(self, login_page, create_user_for_login):
         # Arrange
         expected_url = BaseUrlSingleton.get_base_url() + f'{Routing.profile}'
