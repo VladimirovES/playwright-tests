@@ -11,13 +11,13 @@ import pytest
 @pytest.mark.login
 @allure.epic('User')
 @allure.feature('LoginPage')
-# @qase.suite(title='LoginPage')
+@qase.suite(title='LoginPage')
 class TestLogin:
 
-    # @allure.story('Invalid Login')
-    # @allure.title('With username "{login}" and password "{password}"')
-    # @qase.id(1)
-    # @qase.title('With username "{login}" and password "{password}"')
+    @allure.story('Invalid Login')
+    @allure.title('With username "{login}" and password "{password}"')
+    @qase.id(1)
+    @qase.title('With username "{login}" and password "{password}"')
     @pytest.mark.parametrize('login, password', [(UserData.user_changes.userName, 'invalid'),
                                                  ('invalid_login', UserData.user_changes.password),
                                                  (UserData.user_changes.userName, ""),
@@ -32,9 +32,9 @@ class TestLogin:
         # Assert
         login_page.validation_error.assert_text_eql('Invalid username or password!')
 
-    # @allure.story('Login')
-    # @allure.title('With valid creeds"')
-    # @qase.title('With valid creeds"')
+    @allure.story('Login')
+    @allure.title('With valid creeds"')
+    @qase.title('With valid creeds"')
     def test_valid_login(self, login_page, create_user_for_login):
         # Arrange
         expected_url = BaseUrlSingleton.get_base_url() + f'{Routing.profile}'

@@ -21,13 +21,7 @@ def base_url(request):
     return request.config.getoption("--base_url")
 
 
-def pytest_addoption(parser):
-    parser.addoption('--browser_name', action='store', default="chrome",
-                     help='Браузер для запуска тестов')
-    parser.addoption('--headless', action='store_true', default=None,
-                     help='Запуск браузера без окна')
-    parser.addoption('--base_url', action='store', default=os.getenv("HOST", "https://demoqa.com/"),
-                     help='Выберите хост, для работы тестов')
+
 
 
 # @pytest.fixture(scope='session')
@@ -37,6 +31,14 @@ def pytest_addoption(parser):
 #         yield chromium.new_page()
 #         chromium.close()
 
+
+def pytest_addoption(parser):
+    parser.addoption('--browser_name', action='store', default="chrome",
+                     help='Браузер для запуска тестов')
+    parser.addoption('--headless', action='store_true', default=None,
+                     help='Запуск браузера без окна')
+    parser.addoption('--base_url', action='store', default=os.getenv("HOST", "https://demoqa.com/"),
+                     help='Выберите хост, для работы тестов')
 @pytest.fixture()
 def browser(request):
     browser_name = request.config.getoption('--browser_name')
@@ -84,18 +86,18 @@ def api_clients():
         user_clients[user.userId].account.delete_user(user)
 
 
-# @pytest.hookimpl(tryfirst=True, hookwrapper=True)
-# def pytest_runtest_makereport(item):
-#     outcome = yield
-#     report = outcome.get_result()
-#
-#     if report.when == "call" and report.failed:
-#         page = item.funcargs.get("chromium_page")
-#         if page:
-#             try:
-#                 screenshot = page.screenshot(full_page=True)
-#                 allure.attach(screenshot, name="screenshot", attachment_type=allure.attachment_type.PNG)
-#             except Exception as e:
-#                 print(f"Не удалось сделать скриншот: {e}")
-#
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item):
+    outcome = yield
+    report = outcome.get_result()
+
+    if report.when == "call" and report.failed:
+        page = item.funcargs.get("browser")
+        if page:
+            try:
+                screenshot = page.screenshot(full_page=True)
+                allure.attach(screenshot, name="screenshot", attachment_type=allure.attachment_type.PNG)
+            except Exception as e:
+                print(f"Не удалось сделать скриншот: {e}")
+
 #

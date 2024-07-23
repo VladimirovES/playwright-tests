@@ -7,8 +7,8 @@ from singleton import BaseUrlSingleton
 from utils.routing import Routing
 
 
-# @pytest.mark.regress
-# @pytest.mark.profile
+@pytest.mark.regress
+@pytest.mark.profile
 class TestProfile:
     # @allure.title('Отображение NickName пользователя')
     def test_nickname_user(self, profile_page):
