@@ -1,5 +1,4 @@
 import allure
-from playwright.async_api import Page
 
 from pages.base_page import BasePage
 from models.books import Book

@@ -38,7 +38,7 @@ def pytest_addoption(parser):
 #         chromium.close()
 
 @pytest.fixture()
-def browser(request, configurate_project):
+def browser(request):
     browser_name = request.config.getoption('--browser_name')
     headless = request.config.getoption('--headless')
 
@@ -52,12 +52,12 @@ def browser(request, configurate_project):
 
 
 @pytest.fixture(scope="function")
-def profile_page(chromium_page):
+def profile_page(browser):
     return ProfilePage()
 
 
 @pytest.fixture(scope="function")
-def login_page(chromium_page):
+def login_page(browser):
     return LoginPage()
 
 

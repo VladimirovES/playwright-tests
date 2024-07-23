@@ -7,10 +7,10 @@ from singleton import BaseUrlSingleton
 from utils.routing import Routing
 
 
-@pytest.mark.regress
-@pytest.mark.profile
+# @pytest.mark.regress
+# @pytest.mark.profile
 class TestProfile:
-    @allure.title('Отображение NickName пользователя')
+    # @allure.title('Отображение NickName пользователя')
     def test_nickname_user(self, profile_page):
         # Act
         profile_page.auth(user=UserData.user1).open_page()
@@ -18,7 +18,7 @@ class TestProfile:
         # Assert
         profile_page.username.assert_text_eql(text=UserData.user1.userName)
 
-    @allure.title('Logout')
+    # @allure.title('Logout')
     def test_logout_user(self, profile_page):
         # Arrange
         expected_url = BaseUrlSingleton.get_base_url() + f'{Routing.login}'
@@ -30,7 +30,7 @@ class TestProfile:
         # Assert
         profile_page.assert_url_window_eql(expected_url)
 
-    @allure.title(f'Отображение книги {BooksData.book1.title} в списке')
+    # @allure.title(f'Отображение книги {BooksData.book1.title} в списке')
     def test_mock_book(self, profile_page):
         # Arrange
         book = BooksData.book1
