@@ -6,10 +6,12 @@ from abc import abstractmethod, ABC
 from playwright.sync_api import expect, Locator
 from qaseio.pytest import qase
 
+from singleton import PlaywrightSingleton
+
 
 class PageElement(ABC):
-    def __init__(self, page: Page, locator: str, name: str):
-        self.page = page
+    def __init__(self, locator: str, name: str):
+        self.page = PlaywrightSingleton.get_page()
         self.locator = locator
         self.name = name
 
@@ -44,6 +46,7 @@ class PageElement(ABC):
         with qase.step(f'Assert: "{self._type_of}" - "{self._format_name(**kwargs)}" {text_report} на странице.'):
             if is_visible:
                 expect(self._find_element(**kwargs)).to_be_visible()
+                expect(self._find_element(**kwargs).count())
             else:
                 expect(self._find_element(**kwargs)).not_to_be_visible()
 

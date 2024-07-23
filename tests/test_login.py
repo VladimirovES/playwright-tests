@@ -34,7 +34,6 @@ class TestLogin:
 
     @allure.story('Login')
     @allure.title('With valid creeds"')
-    @qase.id(2)
     @qase.title('With valid creeds"')
     def test_valid_login(self, login_page, create_user_for_login):
         # Arrange

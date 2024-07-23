@@ -30,22 +30,35 @@ def pytest_addoption(parser):
                      help='Выберите хост, для работы тестов')
 
 
-@pytest.fixture(scope='session')
-def chromium_page(api_clients) -> Page:
-    with sync_playwright() as playwright:
-        chromium = playwright.chromium.launch(headless=True)
-        yield chromium.new_page()
-        chromium.close()
+# @pytest.fixture(scope='session')
+# def chromium_page(api_clients) -> Page:
+#     with sync_playwright() as playwright:
+#         chromium = playwright.chromium.launch(headless=False)
+#         yield chromium.new_page()
+#         chromium.close()
+
+@pytest.fixture()
+def browser(request, configurate_project):
+    browser_name = request.config.getoption('--browser_name')
+    headless = request.config.getoption('--headless')
+
+    PlaywrightSingleton.initialize_browser(browser_name, headless)
+    page = PlaywrightSingleton.get_page()
+
+    try:
+        yield page
+    finally:
+        PlaywrightSingleton.close_browser()
 
 
 @pytest.fixture(scope="function")
 def profile_page(chromium_page):
-    return ProfilePage(chromium_page)
+    return ProfilePage()
 
 
 @pytest.fixture(scope="function")
 def login_page(chromium_page):
-    return LoginPage(chromium_page)
+    return LoginPage()
 
 
 @pytest.fixture(scope="session", autouse=True)

@@ -2,14 +2,14 @@ import json
 
 import allure
 
-from singleton import BaseUrlSingleton
+from singleton import BaseUrlSingleton, PlaywrightSingleton
 
-from playwright.sync_api import Page, expect
+from playwright.sync_api import  expect
 
 
 class BasePage:
-    def __init__(self, page: Page):
-        self._page = page
+    def __init__(self):
+        self._page = PlaywrightSingleton.get_page()
         self.host = BaseUrlSingleton.get_base_url()
 
     def open_page(self, route: str = None):
